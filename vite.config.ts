@@ -32,8 +32,8 @@ export default defineConfig({
     }
   ],
   server: {
-    port: 5173,
-    host: true,
+    port: Number(process.env.PORT) || 5173,
+    host: '0.0.0.0',
     open: true,
     fs: {
       allow: ['..']
@@ -49,6 +49,10 @@ export default defineConfig({
         child-src 'self' blob:;
       `.replace(/\s+/g, ' ').trim()
     }
+  },
+  preview: {
+    port: Number(process.env.PORT) || 5173,
+    host: '0.0.0.0'
   },
   resolve: {
     alias: {
