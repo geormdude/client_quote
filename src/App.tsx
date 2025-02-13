@@ -1,3 +1,17 @@
+/**
+ * Content: Main Application Component
+ * 
+ * Component Tree:
+ * App
+ * ├── FileUpload
+ * ├── ProcessingStatus
+ * └── QuoteSummary
+ * 
+ * State Management:
+ * - status: Tracks current processing state
+ * - summary: Stores processed tax return data
+ */
+
 import { useState } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { ProcessingStatus } from './components/ProcessingStatus';
@@ -6,14 +20,25 @@ import { ProcessingStatus as Status, TaxSummary } from './types/tax';
 import { processTaxReturn } from './utils/pdfProcessor';
 import { ShieldCheck } from 'lucide-react';
 
+/**
+ * Root application component that manages the tax return processing workflow
+ * Handles file upload, processing status, and displays results
+ */
 function App() {
+  // Track current processing stage, progress, and user feedback message
   const [status, setStatus] = useState<Status>({
     stage: 'idle',
     progress: 0,
     message: 'Ready to process your tax return'
   });
+  
+  // Store processed tax return summary data
   const [summary, setSummary] = useState<TaxSummary | null>(null);
 
+  /**
+   * Handles the file upload and processing workflow
+   * @param file - The uploaded tax return PDF file
+   */
   const handleFile = async (file: File) => {
     try {
       setStatus({

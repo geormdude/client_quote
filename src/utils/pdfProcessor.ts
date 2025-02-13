@@ -1,12 +1,28 @@
 /**
  * Content: PDF Tax Return Processor
  * 
+ * This module handles the processing of tax return PDFs to generate complexity assessments
+ * and summaries. It uses PDF.js for document parsing and implements a multi-stage
+ * analysis pipeline.
+ * 
+ * Processing Pipeline:
+ * 1. File validation (type & size)
+ * 2. PDF parsing with PDF.js
+ * 3. Page-by-page text extraction
+ * 4. Content analysis for tax forms and schedules
+ * 5. Complexity scoring and summary generation
+ * 
+ * Error Handling:
+ * - PDFProcessingError for all processing-related failures
+ * - Graceful degradation for per-page processing failures
+ * 
  * Call Graph:
  * processTaxReturn
  * ├── getDocument (PDF.js)
  * ├── getPage
  * ├── getTextContent
- * └── calculateComplexityScore
+ * ├── updateSummaryFromText
+ * └── finalizeSummary
  */
 
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
@@ -17,7 +33,10 @@ if (typeof window !== 'undefined' && !import.meta.env?.TEST) {
   GlobalWorkerOptions.workerSrc = '/node_modules/pdfjs-dist/build/pdf.worker.mjs';
 }
 
-// Custom error types for specific failure scenarios
+/**
+ * Custom error class for PDF processing failures
+ * Provides additional context and original error preservation
+ */
 export class PDFProcessingError extends Error {
   constructor(message: string, public readonly originalError?: Error) {
     super(message);
@@ -25,6 +44,16 @@ export class PDFProcessingError extends Error {
   }
 }
 
+/**
+ * Represents the analyzed contents and complexity assessment of a tax return
+ * @property incomeTypes - Array of detected income form types (e.g., W-2, 1099-NEC)
+ * @property schedules - Array of detected tax schedules
+ * @property hasBusinessIncome - Indicates presence of business income (Schedule C)
+ * @property hasRentalProperty - Indicates presence of rental income (Schedule E)
+ * @property investmentComplexity - Assessment of investment situation complexity
+ * @property deductionCategories - Array of detected deduction types
+ * @property estimatedComplexity - Overall tax return complexity assessment
+ */
 export interface TaxSummary {
   incomeTypes: string[];
   schedules: string[];
@@ -37,9 +66,17 @@ export interface TaxSummary {
 
 /**
  * Processes a tax return PDF file and generates a summary of its contents
+ * 
+ * Processing Steps:
+ * 1. Validates file type (PDF) and size (max 50MB)
+ * 2. Converts file to array buffer for PDF.js processing
+ * 3. Extracts text content from each page
+ * 4. Analyzes content for tax-relevant information
+ * 5. Generates complexity assessment
+ * 
  * @param file - The PDF file to process
  * @returns Promise resolving to a TaxSummary object
- * @throws PDFProcessingError if file processing fails
+ * @throws PDFProcessingError for invalid files or processing failures
  */
 export async function processTaxReturn(file: File): Promise<TaxSummary> {
   try {
@@ -107,8 +144,19 @@ export async function processTaxReturn(file: File): Promise<TaxSummary> {
 
 /**
  * Updates the tax summary based on text content analysis
- * @param summary - The current tax summary object
- * @param text - The text content to analyze
+ * 
+ * Detection Categories:
+ * - Tax Schedules (C, E, B, D)
+ * - Income Types (W-2, 1099 forms)
+ * - Deductions (Charitable, Mortgage, Medical)
+ * 
+ * Impact tracking:
+ * - Updates complexity flags based on detected schedules
+ * - Tracks business and rental income presence
+ * - Assesses investment complexity
+ * 
+ * @param summary - The current tax summary object to update
+ * @param text - The extracted text content to analyze
  */
 async function updateSummaryFromText(summary: TaxSummary, text: string): Promise<void> {
   // Schedule detection
@@ -151,9 +199,22 @@ async function updateSummaryFromText(summary: TaxSummary, text: string): Promise
 }
 
 /**
- * Finalizes the tax summary by deduplicating arrays and calculating complexity
+ * Finalizes the tax summary by deduplicating data and calculating overall complexity
+ * 
+ * Processing Steps:
+ * 1. Deduplicates all array fields
+ * 2. Calculates complexity score based on:
+ *    - Number of schedules (x2 multiplier)
+ *    - Business income presence (+3)
+ *    - Rental property presence (+2)
+ *    - Investment complexity level
+ * 3. Determines final complexity category:
+ *    - basic (score ≤ 3)
+ *    - intermediate (score 4-6)
+ *    - advanced (score > 6)
+ * 
  * @param summary - The tax summary to finalize
- * @returns The finalized tax summary
+ * @returns The finalized tax summary with complexity assessment
  */
 function finalizeSummary(summary: TaxSummary): TaxSummary {
   // Deduplicate arrays
