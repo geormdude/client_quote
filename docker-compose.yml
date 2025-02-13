@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  # Development service
+  dev:
+    build:
+      context: .
+      target: builder
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./public:/app/public
+    ports:
+      - "5173:5173"
+    command: >
+      sh -c "mkdir -p public/pdfjs &&
+             cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/pdfjs/ &&
+             npm run dev -- --host 0.0.0.0"
+    environment:
+      - NODE_ENV=development
+      - VITE_APP_TITLE=Tax Quote Generator
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+
+  # Production service
+  prod:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

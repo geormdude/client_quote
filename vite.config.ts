@@ -6,7 +6,31 @@ import { resolve } from 'path';
 export default defineConfig({
   // Support for GitHub Pages deployment
   base: process.env.BASE_URL || '/',
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'pdf-worker-plugin',
+      // Copy PDF.js worker to public directory during dev and build
+      buildStart: async () => {
+        const fs = await import('fs/promises');
+        
+        try {
+          await fs.mkdir('public/pdfjs', { recursive: true });
+          // Use the correct path for the worker file
+          const workerPath = resolve(
+            __dirname,
+            'node_modules/pdfjs-dist/build/pdf.worker.min.js'
+          );
+          await fs.copyFile(
+            workerPath,
+            'public/pdfjs/pdf.worker.min.js'
+          );
+        } catch (error) {
+          console.error('Error copying PDF.js worker:', error);
+        }
+      }
+    }
+  ],
   server: {
     port: 5173,
     host: true,
@@ -28,14 +52,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      // Add alias for pdf.js worker
-      'pdfjs-dist': resolve(__dirname, 'node_modules/pdfjs-dist'),
       '@': resolve(__dirname, 'src')
     }
   },
   optimizeDeps: {
-    include: ['pdfjs-dist'],
-    exclude: []
+    include: ['pdfjs-dist']
   },
   build: {
     rollupOptions: {

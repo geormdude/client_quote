@@ -37,11 +37,7 @@ declare global {
 
 // Initialize PDF.js worker
 if (typeof window !== 'undefined' && !import.meta.env?.TEST) {
-  const workerPath = import.meta.env.PROD ? '/pdfjs/pdf.worker.min.js' : '/pdfjs/pdf.worker.js';
-  GlobalWorkerOptions.workerSrc = new URL(
-    workerPath,
-    import.meta.env.BASE_URL ? new URL(import.meta.env.BASE_URL, window.location.origin).href : window.location.origin
-  ).href;
+  GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
 }
 
 /**

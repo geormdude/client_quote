@@ -11,7 +11,11 @@
     "test": "vitest",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "docker:dev": "docker-compose up dev",
+    "docker:prod": "docker-compose up prod -d",
+    "docker:build": "docker-compose build",
+    "docker:stop": "docker-compose down"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.0.3",
