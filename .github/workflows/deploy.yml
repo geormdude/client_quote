@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # Add this for gh-pages deployment
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -22,25 +22,25 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: |
           npm ci --legacy-peer-deps
-          npm install -g pdfjs-dist # Add this for PDF.js worker
+          npm install pdfjs-dist  # Install as project dependency (remove -g)
 
       - name: Copy PDF Worker
         run: |
-          mkdir -p public/pdfjs # Ensure pdfjs directory exists
+          mkdir -p public/pdfjs
           cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/
           ls -l node_modules/pdfjs-dist/build # Debug: List build directory content
           ls -l public/pdfjs/ # Debug: List public directory content
-          
+
       - name: Build application
         run: |
           npm run build || exit 1
         env:
           BASE_URL: '/${{ github.event.repository.name }}'
-          VITE_PDFJS_WORKER_URL: '/${{ github.event.repository.name }}/pdfjs/pdf.worker.min.js' # Updated path here as well
+          VITE_PDFJS_WORKER_URL: '/${{ github.event.repository.name }}/pdfjs/pdf.worker.min.js'
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -48,4 +48,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
-          cname: ${{ secrets.CNAME }} # Optional: Add if you have a custom domain
+          cname: ${{ secrets.CNAME }}
