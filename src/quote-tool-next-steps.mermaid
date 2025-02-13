@@ -1,0 +1,54 @@
+graph TB
+    subgraph "Current Implementation"
+        Upload[PDF Upload] --> LocalProcess[Local Browser Processing]
+        LocalProcess --> BaseCalc[Calculate Base Costs]
+        BaseCalc --> Quote[Generate Quote]
+        Quote --> EmailOpt[Email Option]
+        EmailOpt --> Accept[Quote Acceptance]
+    end
+
+    subgraph "Recommended Next Steps"
+        A1[1. Analytics Integration]
+        A2[2. PDF Processing Optimization]
+        A3[3. Quote Algorithm Refinement]
+        A4[4. User Experience Enhancement]
+        A5[5. Integration Testing]
+    end
+
+    subgraph "Future Considerations"
+        F1[Automated Follow-ups]
+        F2[Client Dashboard]
+        F3[Service Customization]
+        F4[Multi-year Analysis]
+    end
+
+    subgraph "Key Metrics to Track"
+        M1[Upload Success Rate]
+        M2[Quote Acceptance Rate]
+        M3[Processing Speed]
+        M4[User Drop-off Points]
+    end
+
+    A1 --> M1
+    A1 --> M2
+    A1 --> M3
+    A1 --> M4
+    
+    Quote --> A3
+    LocalProcess --> A2
+    EmailOpt --> A4
+    
+    A4 --> F1
+    A4 --> F2
+    A3 --> F3
+    A2 --> F4
+
+    classDef current fill:#e1f5fe,stroke:#01579b
+    classDef next fill:#e8f5e9,stroke:#1b5e20
+    classDef future fill:#fff3e0,stroke:#e65100
+    classDef metrics fill:#f3e5f5,stroke:#4a148c
+
+    class Upload,LocalProcess,BaseCalc,Quote,EmailOpt,Accept current
+    class A1,A2,A3,A4,A5 next
+    class F1,F2,F3,F4 future
+    class M1,M2,M3,M4 metrics
