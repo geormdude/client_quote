@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_dispatch:
+
+permissions:
+  contents: write # Add this for gh-pages deployment
 
 jobs:
   build-and-deploy:
@@ -12,28 +15,35 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Using the latest checkout action
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Using Node.js version 20 as in your original file
+          node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies (legacy-peer-deps)
-        run: npm ci --legacy-peer-deps # Incorporating --legacy-peer-deps for dependency compatibility
+      - name: Install dependencies
+        run: |
+          npm ci --legacy-peer-deps
+          npm install -g pdfjs-dist # Add this for PDF.js worker
 
-      - name: Type Check (optional - adjust or remove if needed)
-        run: npm run type-check # Assuming you have a type-check script, adjust if necessary
+      - name: Copy PDF Worker
+        run: |
+          mkdir -p public
+          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/
 
       - name: Build application
-        run: npm run build
+        run: |
+          npm run build || exit 1
         env:
-          BASE_URL: '/${{ github.event.repository.name }}' # Setting BASE_URL for GitHub Pages routing
+          BASE_URL: '/${{ github.event.repository.name }}'
+          VITE_PDFJS_WORKER_URL: '/${{ github.event.repository.name }}/pdf.worker.min.js'
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3 # Using the dedicated GitHub Pages deployment action
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Deploying from the 'dist' folder
-          force_orphan: true # Useful for project page deployments
+          publish_dir: ./dist
+          force_orphan: true
+          cname: ${{ secrets.CNAME }} # Optional: Add if you have a custom domain
