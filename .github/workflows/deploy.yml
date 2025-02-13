@@ -22,8 +22,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install dependencies
+- name: Install dependencies
         run: |
           npm ci --legacy-peer-deps
           npm install -g pdfjs-dist # Add this for PDF.js worker
@@ -32,7 +31,9 @@ jobs:
         run: |
           mkdir -p public/pdfjs # Ensure pdfjs directory exists
           cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/
-
+          ls -l node_modules/pdfjs-dist/build # Debug: List build directory content
+          ls -l public/pdfjs/ # Debug: List public directory content
+          
       - name: Build application
         run: |
           npm run build || exit 1
