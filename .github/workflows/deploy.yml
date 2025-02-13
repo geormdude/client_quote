@@ -30,15 +30,15 @@ jobs:
 
       - name: Copy PDF Worker
         run: |
-          mkdir -p public
-          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/
+          mkdir -p public/pdfjs # Ensure pdfjs directory exists
+          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/
 
       - name: Build application
         run: |
           npm run build || exit 1
         env:
           BASE_URL: '/${{ github.event.repository.name }}'
-          VITE_PDFJS_WORKER_URL: '/${{ github.event.repository.name }}/pdf.worker.min.js'
+          VITE_PDFJS_WORKER_URL: '/${{ github.event.repository.name }}/pdfjs/pdf.worker.min.js' # Updated path here as well
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
