@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { ProcessingStatus } from './components/ProcessingStatus';
@@ -36,13 +35,12 @@ function App() {
         progress: 100,
         message: 'Analysis complete!'
       });
-
       setSummary(result);
-    } catch (error) {
+    } catch (error: unknown) { // Type error as unknown for better type safety
       setStatus({
-        stage: 'error',
+        stage: 'error', 
         progress: 0,
-        message: 'Error processing file. Please try again.'
+        message: `Error processing file: ${error instanceof Error ? error.message : 'Please try again.'}`
       });
     }
   };
