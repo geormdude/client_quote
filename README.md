@@ -44,8 +44,7 @@ Before you begin, ensure you have the following installed:
    cd client_quote
 ````
 
-
-2.  **Install dependencies:**
+2. **Install dependencies:**
 
     Navigate into the cloned project directory (`client_quote`) and install the required npm packages:
 
@@ -57,7 +56,7 @@ Before you begin, ensure you have the following installed:
 
 ### Running the Development Server
 
-1.  **Start the development server:**
+1. **Start the development server:**
 
     Once the dependencies are installed, start the development server with:
 
@@ -67,7 +66,7 @@ Before you begin, ensure you have the following installed:
     yarn dev
     ```
 
-2.  **Access the application:**
+2. **Access the application:**
 
     Open your web browser and go to the address displayed in your terminal (usually `http://localhost:5173`). The application should now be running, and you can start using the Tax Quote Generator.
 
@@ -75,23 +74,23 @@ Before you begin, ensure you have the following installed:
 
 Using the Tax Quote Generator is straightforward:
 
-1.  **Upload Tax Return PDF:**
+1. **Upload Tax Return PDF:**
 
       - **Drag and Drop:** Drag your Form 1040 PDF file and drop it into the designated area on the application.
       - **Click to Upload:** Alternatively, click the "upload" button to open a file dialog and select your Form 1040 PDF file.
 
-2.  **Automatic Analysis:**
+2. **Automatic Analysis:**
 
       - Once the PDF is uploaded, the application automatically begins analyzing the tax return.
       - No manual initiation of the analysis is required.
 
-3.  **Review Complexity Assessment and Quote:**
+3. **Review Complexity Assessment and Quote:**
 
       - After the analysis is complete, the application will display:
           - A complexity assessment of the tax return (e.g., Basic, Intermediate, Advanced).
           - A generated quote based on the complexity.
 
-4.  **Real-time Processing Status:**
+4. **Real-time Processing Status:**
 
       - During the PDF processing and analysis, a progress indicator will be displayed in real-time.
       - This provides visual feedback on the application's current status and processing progress.
@@ -102,59 +101,59 @@ Using the Tax Quote Generator is straightforward:
 
 The application intelligently analyzes Form 1040 tax returns by evaluating the presence and complexity of various income sources, tax schedules, and deductions. The key components analyzed include:
 
-  - **Income Sources**
+- **Income Sources**
 
-      - **W-2 Employment Income:**  Detects and analyzes W-2 forms for employment income.
-      - **1099-NEC (Self-employment):** Identifies self-employment income reported on Form 1099-NEC.
-      - **1099-DIV (Dividends):**  Analyzes dividend income from Form 1099-DIV.
-      - **1099-INT (Interest):**  Detects and processes interest income from Form 1099-INT.
+  - **W-2 Employment Income:**  Detects and analyzes W-2 forms for employment income.
+  - **1099-NEC (Self-employment):** Identifies self-employment income reported on Form 1099-NEC.
+  - **1099-DIV (Dividends):**  Analyzes dividend income from Form 1099-DIV.
+  - **1099-INT (Interest):**  Detects and processes interest income from Form 1099-INT.
 
-  - **Tax Schedules**
+- **Tax Schedules**
 
-      - **Schedule B (Interest and Dividends):**  Checks for the presence of Schedule B, indicating detailed interest or dividend income.
-      - **Schedule C (Business Income):**  Detects Schedule C, signifying business income or loss from a sole proprietorship.
-      - **Schedule D (Capital Gains):**  Analyzes Schedule D for capital gains and losses from investments.
-      - **Schedule E (Rental Income):**  Identifies Schedule E, indicating income or loss from rental properties, royalties, partnerships, S corporations, estates, and trusts.
+  - **Schedule B (Interest and Dividends):**  Checks for the presence of Schedule B, indicating detailed interest or dividend income.
+  - **Schedule C (Business Income):**  Detects Schedule C, signifying business income or loss from a sole proprietorship.
+  - **Schedule D (Capital Gains):**  Analyzes Schedule D for capital gains and losses from investments.
+  - **Schedule E (Rental Income):**  Identifies Schedule E, indicating income or loss from rental properties, royalties, partnerships, S corporations, estates, and trusts.
 
-  - **Deductions**
+- **Deductions**
 
-      - **Charitable Contributions:**  Evaluates the complexity related to charitable contribution deductions.
-      - **Mortgage Interest:**  Analyzes deductions for mortgage interest expenses.
-      - **Medical Expenses:**  Assesses the complexity associated with medical expense deductions.
+  - **Charitable Contributions:**  Evaluates the complexity related to charitable contribution deductions.
+  - **Mortgage Interest:**  Analyzes deductions for mortgage interest expenses.
+  - **Medical Expenses:**  Assesses the complexity associated with medical expense deductions.
 
 ### Complexity Scoring
 
 The application employs a weighted scoring system to determine the overall complexity of a tax return:
 
-  - **Schedule Presence:**  Each detected tax schedule (Schedule B, C, D, E) adds a significant complexity weight:
+- **Schedule Presence:**  Each detected tax schedule (Schedule B, C, D, E) adds a significant complexity weight:
 
-      - **×2 multiplier per schedule**
+  - **×2 multiplier per schedule**
 
-  - **Specific Income and Deduction Types:**
+- **Specific Income and Deduction Types:**
 
-      - **Business income (Schedule C):**  +3 points
-      - **Rental property (Schedule E):**  +2 points
-      - **Investment Complexity Levels (Schedule D):**
-          - **Complex Investments:**  +3 points (e.g., complex derivatives, options trading)
-          - **Moderate Investments:**  +1 point (e.g., sales of stocks and bonds)
-          - **Simple Investments:**  0 points (e.g., basic capital gains)
+  - **Business income (Schedule C):**  +3 points
+  - **Rental property (Schedule E):**  +2 points
+  - **Investment Complexity Levels (Schedule D):**
+    - **Complex Investments:**  +3 points (e.g., complex derivatives, options trading)
+    - **Moderate Investments:**  +1 point (e.g., sales of stocks and bonds)
+    - **Simple Investments:**  0 points (e.g., basic capital gains)
 
-  - **Final Complexity Categories:**
+- **Final Complexity Categories:**
 
     The total complexity score is used to categorize the tax return into three levels:
 
-      - **Basic:** (score ≤ 3) -  Represents simple tax returns, typically with only W-2 income and standard deductions.
-      - **Intermediate:** (score 4-6) - Indicates moderately complex returns, potentially including itemized deductions, investment income, or self-employment income.
-      - **Advanced:** (score \> 6) -  Signifies highly complex tax returns, often involving multiple schedules, business income, rental properties, and complex investments.
+  - **Basic:** (score ≤ 3) -  Represents simple tax returns, typically with only W-2 income and standard deductions.
+  - **Intermediate:** (score 4-6) - Indicates moderately complex returns, potentially including itemized deductions, investment income, or self-employment income.
+  - **Advanced:** (score \> 6) -  Signifies highly complex tax returns, often involving multiple schedules, business income, rental properties, and complex investments.
 
 ## Security and Privacy
 
 Your privacy and data security are paramount. The Tax Quote Generator is designed with the following security and privacy principles in mind:
 
-  - **Client-Side Processing:** All tax return processing is performed directly within your web browser using [PDF.js](https://mozilla.github.io/pdf.js/). This ensures that no sensitive tax data is ever transmitted to external servers.
-  - **Data Privacy:**  No tax return data leaves your browser during the entire process. The application operates offline once loaded, and no information is sent over the internet.
-  - **In-Memory Processing:**  Tax return files are processed in-memory and are not stored persistently by the application. Once you close the browser window or refresh the page, all data is cleared from memory.
-  - **File Validation:**  The application includes built-in file validation to ensure that only valid Form 1040 PDF files are processed. This validation includes checks for file type and size to prevent malicious uploads.
+- **Client-Side Processing:** All tax return processing is performed directly within your web browser using [PDF.js](https://mozilla.github.io/pdf.js/). This ensures that no sensitive tax data is ever transmitted to external servers.
+- **Data Privacy:**  No tax return data leaves your browser during the entire process. The application operates offline once loaded, and no information is sent over the internet.
+- **In-Memory Processing:**  Tax return files are processed in-memory and are not stored persistently by the application. Once you close the browser window or refresh the page, all data is cleared from memory.
+- **File Validation:**  The application includes built-in file validation to ensure that only valid Form 1040 PDF files are processed. This validation includes checks for file type and size to prevent malicious uploads.
 
 ## Project Structure
 
@@ -184,40 +183,46 @@ client_quote/
 
 Contributions are welcome and encouraged\! Here's how you can contribute to the Tax Quote Generator:
 
-1.  **Fork the repository:**
+1. **Fork the repository:**
 
       - Click the "Fork" button at the top right of the repository page on GitHub. This will create a copy of the repository in your GitHub account.
 
-2.  **Create your feature branch:**
+2. **Create your feature branch:**
 
       - Clone the forked repository to your local machine.
       - In your terminal, navigate to the cloned repository directory.
       - Create a new branch for your feature or bug fix:
+
         ```bash
         git checkout -b feature/AmazingFeature
         ```
+
         *(Replace `feature/AmazingFeature` with a descriptive name for your branch)*
 
-3.  **Commit your changes:**
+3. **Commit your changes:**
 
       - Make your code changes and improvements.
       - Stage your changes using Git:
+
         ```bash
         git add .
         ```
+
       - Commit your changes with a clear and concise commit message:
+
         ```bash
         git commit -m 'Add some AmazingFeature'
         ```
 
-4.  **Push to the branch:**
+4. **Push to the branch:**
 
       - Push your local branch to your forked repository on GitHub:
+
         ```bash
         git push origin feature/AmazingFeature
         ```
 
-5.  **Open a Pull Request:**
+5. **Open a Pull Request:**
 
       - Go to the original repository on GitHub.
       - Click the "Compare & pull request" button that appears on GitHub.
@@ -230,8 +235,7 @@ This project is licensed under the [MIT License](LICENSE) - see the `LICENSE` fi
 
 ## Acknowledgments
 
-  - [PDF.js](https://mozilla.github.io/pdf.js/) - For providing the core PDF processing capabilities in the browser.
-  - [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework that enables rapid and consistent styling.
-  - [Lucide](https://lucide.dev/) - For the beautiful and consistent icon set used throughout the application.
-  - [Vite](https://www.google.com/url?sa=E&source=gmail&q=https://vitejs.dev/) - For the fast and efficient build tool that makes development a breeze.
-
+- [PDF.js](https://mozilla.github.io/pdf.js/) - For providing the core PDF processing capabilities in the browser.
+- [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework that enables rapid and consistent styling.
+- [Lucide](https://lucide.dev/) - For the beautiful and consistent icon set used throughout the application.
+- [Vite](https://www.google.com/url?sa=E&source=gmail&q=https://vitejs.dev/) - For the fast and efficient build tool that makes development a breeze.

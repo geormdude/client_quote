@@ -28,9 +28,17 @@
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import type { TextItem, TextMarkedContent } from 'pdfjs-dist/types/src/display/api';
 
+// Declare global pdfjsWorkerSrc property
+declare global {
+  interface Window {
+    pdfjsWorkerSrc?: string;
+  }
+}
+
 // Initialize PDF.js worker
 if (typeof window !== 'undefined' && !import.meta.env?.TEST) {
-  GlobalWorkerOptions.workerSrc = '/node_modules/pdfjs-dist/build/pdf.worker.mjs';
+  // Use a direct path to the worker file in the public directory
+  GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.mjs';
 }
 
 /**
