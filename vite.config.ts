@@ -29,7 +29,8 @@ export default defineConfig({
   resolve: {
     alias: {
       // Add alias for pdf.js worker
-      'pdfjs-dist': resolve(__dirname, 'node_modules/pdfjs-dist')
+      'pdfjs-dist': resolve(__dirname, 'node_modules/pdfjs-dist'),
+      '@': resolve(__dirname, 'src')
     }
   },
   optimizeDeps: {
@@ -46,6 +47,9 @@ export default defineConfig({
     },
     // Ensure worker files are copied to dist
     assetsDir: 'assets',
-    copyPublicDir: true
+    copyPublicDir: true,
+    // Ensure proper handling of worker files
+    target: 'esnext',
+    sourcemap: true
   }
 });

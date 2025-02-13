@@ -26,21 +26,26 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci --legacy-peer-deps
-          npm install pdfjs-dist  # Install as project dependency (remove -g)
+          npm install pdfjs-dist
+
+      - name: Debug PDF.js files
+        run: |
+          echo "Listing pdfjs-dist contents:"
+          ls -la node_modules/pdfjs-dist/
+          echo "Listing build directory:"
+          ls -la node_modules/pdfjs-dist/build/
 
       - name: Copy PDF Worker
         run: |
           mkdir -p public/pdfjs
-          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/
-          ls -l node_modules/pdfjs-dist/build # Debug: List build directory content
-          ls -l public/pdfjs/ # Debug: List public directory content
+          cp node_modules/pdfjs-dist/build/pdf.worker.js public/pdfjs/
+          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/ || cp node_modules/pdfjs-dist/build/pdf.worker.js public/pdfjs/pdf.worker.min.js
 
       - name: Build application
         run: |
-          npm run build || exit 1
+          npm run build
         env:
           BASE_URL: '/${{ github.event.repository.name }}'
-          VITE_PDFJS_WORKER_URL: '/${{ github.event.repository.name }}/pdfjs/pdf.worker.min.js'
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
