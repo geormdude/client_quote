@@ -1,41 +1,39 @@
-# GitHub Actions workflow for automated deployment
-# Triggers on push to main branch or manual dispatch
 name: Deploy Tax Quote Generator
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4 # Using the latest checkout action
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20' # Using Node.js version 20 as in your original file
           cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install dependencies (legacy-peer-deps)
+        run: npm ci --legacy-peer-deps # Incorporating --legacy-peer-deps for dependency compatibility
 
-      - name: Type Check
-        run: npm run build
+      - name: Type Check (optional - adjust or remove if needed)
+        run: npm run type-check # Assuming you have a type-check script, adjust if necessary
 
-      - name: Build
+      - name: Build application
         run: npm run build
         env:
-          BASE_URL: '/${{ github.event.repository.name }}'
+          BASE_URL: '/${{ github.event.repository.name }}' # Setting BASE_URL for GitHub Pages routing
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3 # Using the dedicated GitHub Pages deployment action
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          force_orphan: true 
+          publish_dir: ./dist # Deploying from the 'dist' folder
+          force_orphan: true # Useful for project page deployments
