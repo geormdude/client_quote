@@ -23,10 +23,11 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Clean install
         run: |
-          npm ci --legacy-peer-deps
-          npm install pdfjs-dist
+          rm -rf node_modules package-lock.json
+          npm install --legacy-peer-deps
+          npm ls pdfjs-dist || true  # Check if pdfjs-dist is installed correctly
 
       - name: Debug PDF.js files
         run: |
@@ -34,18 +35,30 @@ jobs:
           ls -la node_modules/pdfjs-dist/
           echo "Listing build directory:"
           ls -la node_modules/pdfjs-dist/build/
+          echo "Checking for specific worker files:"
+          find node_modules/pdfjs-dist -name "pdf.worker*.js"
 
       - name: Copy PDF Worker
         run: |
           mkdir -p public/pdfjs
-          cp node_modules/pdfjs-dist/build/pdf.worker.js public/pdfjs/
-          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/ || cp node_modules/pdfjs-dist/build/pdf.worker.js public/pdfjs/pdf.worker.min.js
+          echo "Copying worker files..."
+          cp node_modules/pdfjs-dist/build/pdf.worker.js public/pdfjs/ || echo "worker.js not found"
+          cp node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdfjs/ || echo "worker.min.js not found"
+          echo "Verifying copied files:"
+          ls -la public/pdfjs/
 
       - name: Build application
         run: |
           npm run build
         env:
           BASE_URL: '/${{ github.event.repository.name }}'
+
+      - name: Verify dist directory
+        run: |
+          echo "Checking dist directory structure:"
+          ls -R dist/
+          echo "Checking for worker files in dist:"
+          find dist -name "pdf.worker*.js"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
